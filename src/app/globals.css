@@ -1,0 +1,150 @@
+@import "tailwindcss";
+
+/*
+ * Los colores se definen en src/datos.ts (sección COLORES) y llegan aquí como variables CSS.
+ * Los valores de :root son solo un respaldo con la misma paleta.
+ */
+@theme inline {
+  --color-fondo: var(--fondo);
+  --color-tarjeta: var(--tarjeta);
+  --color-borde: var(--borde);
+  --color-texto: var(--texto);
+  --color-suave: var(--texto-suave);
+  --color-dorado: var(--dorado);
+  --color-naranja: var(--naranja);
+  --color-neon: var(--rojo-neon);
+  --color-rojo: var(--rojo);
+  --color-azul: var(--azul);
+  --color-whatsapp: var(--whatsapp);
+  --font-sans: var(--font-inter);
+  --font-titulo: var(--font-oswald);
+}
+
+:root {
+  --fondo: #0d0a08;
+  --tarjeta: #1a1512;
+  --borde: #2e2520;
+  --texto: #fff6e5;
+  --texto-suave: #c9bba8;
+  --dorado: #fdd828;
+  --naranja: #fd8802;
+  --rojo-neon: #f80401;
+  --rojo: #c81e14;
+  --azul: #4d6bff;
+  --whatsapp: #25d366;
+  /* Alto de la barra de categorías: las secciones dejan ese espacio al saltar a ellas. */
+  --alto-barra: 4rem;
+  color-scheme: dark;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--fondo);
+    color: var(--texto);
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--naranja) 55%, transparent);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 3px solid var(--azul);
+    outline-offset: 3px;
+  }
+  section[id] {
+    scroll-margin-top: calc(var(--alto-barra) + 0.75rem);
+  }
+}
+
+/* Resplandor cálido detrás del logo (estático, sin animación). */
+@utility resplandor {
+  background:
+    radial-gradient(42% 38% at 50% 34%, color-mix(in oklab, var(--rojo-neon) 22%, transparent), transparent 70%),
+    radial-gradient(70% 50% at 50% 30%, color-mix(in oklab, var(--naranja) 10%, transparent), transparent 75%);
+}
+
+/* Títulos con brillo de neón suave. */
+@utility neon-dorado {
+  color: var(--dorado);
+  text-shadow:
+    0 0 14px color-mix(in oklab, var(--naranja) 55%, transparent),
+    0 0 2px color-mix(in oklab, var(--dorado) 60%, transparent);
+}
+
+/* Línea de neón bajo los títulos de categoría. */
+@utility linea-neon {
+  height: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--rojo-neon), var(--naranja) 45%, var(--dorado));
+  box-shadow: 0 0 12px color-mix(in oklab, var(--naranja) 70%, transparent);
+}
+
+/* Barra de categorías: desplazamiento horizontal sin barra visible. */
+@utility sin-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ===================== Hoja del pedido (dialog nativo) ===================== */
+.hoja {
+  margin: auto 0 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 88dvh;
+  padding: 0;
+  border: 1px solid var(--borde);
+  border-bottom: 0;
+  border-radius: 1.25rem 1.25rem 0 0;
+  background: var(--tarjeta);
+  color: var(--texto);
+}
+.hoja::backdrop {
+  background: rgb(0 0 0 / 0.7);
+}
+.hoja[open] {
+  animation: subir-hoja 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (min-width: 640px) {
+  .hoja {
+    margin: auto;
+    width: min(30rem, calc(100vw - 2rem));
+    border-bottom: 1px solid var(--borde);
+    border-radius: 1.25rem;
+  }
+}
+@keyframes subir-hoja {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+html:has(dialog[open]) {
+  overflow: hidden;
+}
+
+/* Pequeño rebote del contador al agregar un producto. */
+@keyframes rebote {
+  40% {
+    transform: scale(1.18);
+  }
+}
+.rebote {
+  animation: rebote 0.3s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
